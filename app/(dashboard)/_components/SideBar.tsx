@@ -15,7 +15,7 @@ const SideBar = () => {
   const router = useRouter();
   const { signOut } = useClerk();
   return (
-    <div className=" w-[280px] bg-[#5A57FF] flex flex-col justify-between">
+    <div className=" w-[280px] bg-primary flex flex-col justify-between">
       <div>
         <div
           onClick={() => router.push("/")}
