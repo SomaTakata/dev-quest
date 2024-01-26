@@ -3,6 +3,9 @@ import WelcomeMessage from "./WelcomeMessage";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { CardModal } from "./CardModal";
 
 const DashBoard = () => {
   return (
@@ -12,7 +15,12 @@ const DashBoard = () => {
           <h1 className="font-bold text-3xl">Dashboard</h1>
           <WelcomeMessage />
         </div>
-        <PlusCircle size={36} />
+        <Dialog>
+          <DialogTrigger asChild>
+            <PlusCircle size={36} />
+          </DialogTrigger>
+          <CardModal />
+        </Dialog>
       </div>
       <div className="flex flex-column flex-wrap gap-4">
         <Card className="w-[300px] h-[220px] p-3">
@@ -25,9 +33,7 @@ const DashBoard = () => {
               <p className="text-accent-foreground text-sm font-semibold">
                 期限
               </p>
-              <p className="text-[#8F8F8F] font-xs font-semibold">
-                2023/01/13 ~ 2023/02/16
-              </p>
+              <p className="text-[#8F8F8F] font-xs font-semibold">2023/02/16</p>
             </div>
             <div className="flex flex-col gap-1">
               <p className="text-accent-foreground text-sm font-semibold">
@@ -43,10 +49,15 @@ const DashBoard = () => {
             </div>
           </div>
         </Card>
-        <Card className="gap-3 w-[300px] h-[220px] p-6 border-[3px] bg-inherit border-[#BEBEC1] flex flex-col justify-center items-center">
-          <p className="text-[#BEBEC1] text-xl font-bold">新しく作成する</p>
-          <PlusCircle className="text-[#BEBEC1]" size={36} />
-        </Card>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Card className="gap-3 w-[300px] h-[220px] p-6 border-[3px] bg-inherit border-[#BEBEC1] flex flex-col justify-center items-center">
+              <p className="text-[#BEBEC1] text-xl font-bold">新しく作成する</p>
+              <PlusCircle className="text-[#BEBEC1]" size={36} />
+            </Card>
+          </DialogTrigger>
+          <CardModal />
+        </Dialog>
       </div>
     </div>
   );
