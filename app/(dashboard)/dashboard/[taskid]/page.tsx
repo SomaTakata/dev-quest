@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Plus, Square, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import React from "react";
+import QuestionCard from "../../_components/QuestionCard";
 
 const taskHome = () => {
   return (
@@ -26,28 +26,9 @@ const taskHome = () => {
       </div>
 
       <div className="px-4 w-full flex justify-center">
-        <div className="mt-10 w-full max-w-[980px]">
+        <div className="mt-10 w-full">
           <p className=" text-xl font-bold mb-2">質問</p>
-          <Card className=" h-[178px] px-6 py-8 rounded-sm">
-            <div className="flex">
-              <Square size={24} className="" />
-              <div className="grow mx-6 text-lg font-semibold leading-6">
-                <p>
-                  問1)
-                  MIXIのインターンシップで挑戦してみたいことや目的、目標を教えてください
-                  <br />
-                  (500文字以内)*
-                </p>
-                <Button
-                  className="mt-6 w-full text-lg font-semibold bg-primary"
-                  disabled
-                >
-                  質問を深掘する
-                </Button>
-              </div>
-              <Trash2 size={24} className="text-muted" />
-            </div>
-          </Card>
+          <QuestionCard />
           <Button className="mt-12 font-semibold text-md bg-[#FFFFFF] text-primary hover:text-[#FFFFFF] border border-primary">
             <Plus className="mr-2 h-4 w-4" />
             質問を追加
