@@ -4,7 +4,6 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import SideBar from "./(dashboard)/_components/SideBar";
 import NavBar from "./(dashboard)/_components/NavBar";
-import { Ghost } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,6 +11,9 @@ export const metadata: Metadata = {
   title: "Dev Quest",
   description:
     "「Dev」はデベロッパー（エンジニア）を、「Quest」は探求や冒険を意味し、自分自身のキャリアや目標についての探求をサポートするサービスであることを表しています。",
+  icons: {
+    icon: "/dev-quest.svg",
+  },
 };
 
 export default function RootLayout({
