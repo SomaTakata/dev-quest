@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import SideBar from "./(dashboard)/_components/SideBar";
 import NavBar from "./(dashboard)/_components/NavBar";
+import { Ghost } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="ja">
         <body className={inter.className}>
           <div className="flex h-full">
             <SideBar />
