@@ -29,7 +29,7 @@ const taskHome = () => {
         <div className="mt-10 w-full">
           <p className=" text-xl font-bold mb-2">質問</p>
           <QuestionCard />
-          <Button className="mt-12 font-semibold text-md bg-[#FFFFFF] text-primary hover:text-[#FFFFFF] border border-primary">
+          <Button className="mt-12   bg-[#FFFFFF] text-primary hover:text-[#FFFFFF] border border-primary">
             <Plus className="mr-2 h-4 w-4" />
             質問を追加
           </Button>

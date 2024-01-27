@@ -2,12 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Check, Loader2, Square, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-type ButtonState = "available" | "loading" | "completed";
+type ButtonStateType = "available" | "loading" | "completed";
 type ButtonProperties = {
-  [state in ButtonState]: {
+  [state in ButtonStateType]: {
     text: string;
     disabled?: boolean;
     icon?: JSX.Element;
@@ -30,21 +31,20 @@ const buttonProperties: ButtonProperties = {
 };
 
 const QuestionCard = () => {
-  const [buttonState, setButtonState] = useState<ButtonState>("available");
+  const [buttonState, setButtonState] = useState<ButtonStateType>("available");
 
   return (
     <Card className=" h-[178px] px-6 py-8 rounded-sm">
       <div className="flex">
-        <Square size={24} className="" />
+        <Checkbox className="border-secondary mt-1" />
         <div className="grow mx-6 text-lg font-semibold leading-6">
           <p>
             問1)
             MIXIのインターンシップで挑戦してみたいことや目的、目標を教えてください
-            <br />
-            (500文字以内)*
+            500文字以内
           </p>
           <Button
-            className="mt-6 w-full text-lg font-semibold bg-primary"
+            className="mt-6 w-full text-base  bg-primary"
             disabled={buttonProperties[buttonState].disabled}
             onClick={() => {
               setButtonState("loading");
