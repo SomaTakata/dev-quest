@@ -9,13 +9,39 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { Loader2, Check } from "lucide-react";
 
+type ButtonStateType = "available" | "loading" | "completed";
+type ButtonProperties = {
+  [state in ButtonStateType]: {
+    text: string;
+    disabled?: boolean;
+    icon?: JSX.Element;
+  };
+};
 export type QuestionAccordionItemProps = {
   value: string;
 };
 
+const buttonProperties: ButtonProperties = {
+  available: {
+    text: "深掘る",
+  },
+  loading: {
+    text: "深掘り中",
+    disabled: true,
+    icon: <Loader2 className="mr-2 h-4 w-4 animate-spin" />,
+  },
+  completed: {
+    text: "深堀り完了",
+    disabled: true,
+    icon: <Check className="mr-2 h-4 w-4" />,
+  },
+};
+
 const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
   const [inputValue, setInputValue] = useState("");
+  const [buttonState, setButtonState] = useState<ButtonStateType>("available");
 
   return (
     <AccordionItem
@@ -38,10 +64,24 @@ const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
           />
           <div className="flex justify-end mt-4">
             <Button
-              className="px-12  font-bold text-primary-foreground hover:text-primary hover:bg-primary-foreground border border-primary-foreground"
-              disabled={inputValue.length === 0}
+              className="w-36 font-bold text-primary-foreground hover:text-primary hover:bg-primary-foreground border border-primary-foreground"
+              disabled={
+                inputValue.length === 0 ||
+                buttonProperties[buttonState].disabled
+              }
+              onClick={() => {
+                setButtonState("loading");
+                setTimeout(() => {
+                  setButtonState("completed");
+
+                  setTimeout(() => {
+                    setButtonState("available");
+                  }, 1000);
+                }, 3000);
+              }}
             >
-              深掘る
+              {buttonProperties[buttonState].icon}
+              {buttonProperties[buttonState].text}
             </Button>
           </div>
         </div>
