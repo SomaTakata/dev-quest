@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import { uuid } from "uuidv4";
 import {
   Form,
   FormControl,
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   companyName: z.string().min(2, {
@@ -24,22 +26,24 @@ const formSchema = z.object({
   date: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
+  id: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
 });
 export function TextForm() {
-  // 1. Define your form.
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       companyName: "",
       date: "",
+      id: uuid(),
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
+    router.push(`/dashboard/${uuid}`);
   }
 
   return (

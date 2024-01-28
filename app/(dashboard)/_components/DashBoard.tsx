@@ -9,7 +9,7 @@ import { CardModal } from "./CardModal";
 
 const DashBoard = () => {
   return (
-    <div className="px-12 mt-10">
+    <div className="px-16 mt-10">
       <div className="flex flex-row justify-between items-center mb-8">
         <div className="">
           <h1 className="font-bold text-3xl">Dashboard</h1>
