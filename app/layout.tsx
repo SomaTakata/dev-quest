@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   title: "Dev Quest",
   description:
     "「Dev」はデベロッパー（エンジニア）を、「Quest」は探求や冒険を意味し、自分自身のキャリアや目標についての探求をサポートするサービスであることを表しています。",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -18,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="ja">
         <body className={inter.className}>{children}</body>
       </html>
     </ClerkProvider>
