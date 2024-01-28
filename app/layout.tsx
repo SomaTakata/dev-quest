@@ -12,7 +12,11 @@ export const metadata: Metadata = {
   description:
     "「Dev」はデベロッパー（エンジニア）を、「Quest」は探求や冒険を意味し、自分自身のキャリアや目標についての探求をサポートするサービスであることを表しています。",
   icons: {
-    icon: "/dev-quest.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
 };
 
