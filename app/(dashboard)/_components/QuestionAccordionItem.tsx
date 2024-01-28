@@ -90,7 +90,7 @@ const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
             );
 
             return (
-              <>
+              <div key={index}>
                 {index > 0 ? separator : <></>}
                 <Textarea
                   className={`bg-[#FFFFFF] text-secondary py-2`}
@@ -103,7 +103,7 @@ const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
                   }
                   disabled={isDisabled}
                 />
-              </>
+              </div>
             );
           })}
 
