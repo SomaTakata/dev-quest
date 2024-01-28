@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Loader2, Check } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 type ButtonStateType = "available" | "loading" | "completed";
 type ButtonProperties = {
@@ -18,6 +19,11 @@ type ButtonProperties = {
     disabled?: boolean;
     icon?: JSX.Element;
   };
+};
+type QuestionItem = {
+  question: string;
+  inputValue: string;
+  locked?: boolean;
 };
 export type QuestionAccordionItemProps = {
   value: string;
@@ -40,15 +46,33 @@ const buttonProperties: ButtonProperties = {
 };
 
 const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
-  const [inputValue, setInputValue] = useState("");
+  const [questionItems, setQuestionItems] = useState<QuestionItem[]>([
+    {
+      question: "なぜあなたはインターンに参加したいのですか？",
+      inputValue: "",
+    },
+  ]);
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
+
+  const handleChangeInputValue = (index: number, value: string) => {
+    const newQuestionItems = [...questionItems];
+    newQuestionItems[index] = { ...newQuestionItems[index], inputValue: value };
+
+    setQuestionItems(newQuestionItems);
+  };
+
+  const handleNewQuestion = (question: string) => {
+    const newQuestionItems = [...questionItems, { question, inputValue: "" }];
+
+    setQuestionItems(newQuestionItems);
+  };
 
   return (
     <AccordionItem
       value={props.value}
       className={cn(
         "bg-primary text-primary-foreground transition-color duration-200 hover:opacity-100",
-        inputValue.length > 0 ? "" : "opacity-60",
+        questionItems[0].inputValue.length > 0 ? "" : "opacity-60",
       )}
     >
       <AccordionTrigger className="font-medium">
@@ -56,25 +80,51 @@ const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
       </AccordionTrigger>
       <AccordionContent>
         <div className="px-4 ">
-          <Textarea
-            className={`bg-[#FFFFFF] text-secondary py-2`}
-            placeholder="回答を記入してください"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-          />
+          {questionItems.map((item, index) => {
+            const isDisabled = item.locked || questionItems.length - index > 1;
+            const separator = (
+              <>
+                <Separator className="mt-8" />
+                <p className="font-medium mt-6 mb-4 ml-3">{item.question}</p>
+              </>
+            );
+
+            return (
+              <>
+                {index > 0 ? separator : <></>}
+                <Textarea
+                  className={`bg-[#FFFFFF] text-secondary py-2`}
+                  placeholder="回答を記入してください"
+                  value={item.inputValue}
+                  onChange={
+                    isDisabled
+                      ? () => {}
+                      : (e) => handleChangeInputValue(index, e.target.value)
+                  }
+                  disabled={isDisabled}
+                />
+              </>
+            );
+          })}
+
           <div className="flex justify-end mt-4">
             <Button
               className="w-36 font-bold text-primary-foreground hover:text-primary hover:bg-primary-foreground border border-primary-foreground"
               disabled={
-                inputValue.length === 0 ||
-                buttonProperties[buttonState].disabled
+                questionItems[questionItems.length - 1].inputValue.length ===
+                  0 || buttonProperties[buttonState].disabled
               }
               onClick={() => {
                 setButtonState("loading");
+                questionItems[questionItems.length - 1].locked = true;
+
                 setTimeout(() => {
                   setButtonState("completed");
 
                   setTimeout(() => {
+                    handleNewQuestion(
+                      "なぜあなたはインターンに参加したいのですか？",
+                    );
                     setButtonState("available");
                   }, 1000);
                 }, 3000);
