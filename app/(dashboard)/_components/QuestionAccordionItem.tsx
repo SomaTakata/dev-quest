@@ -20,13 +20,19 @@ type ButtonProperties = {
     icon?: JSX.Element;
   };
 };
-type QuestionItem = {
+export type SubQuestion = {
+  id?: string;
   question: string;
   inputValue: string;
   locked?: boolean;
 };
+export type SubQuestionGroup = {
+  items: SubQuestion[];
+};
 export type QuestionAccordionItemProps = {
   value: string;
+  items: SubQuestion[];
+  setSubQuestions: (value: SubQuestionGroup) => void;
 };
 
 const buttonProperties: ButtonProperties = {
@@ -46,25 +52,19 @@ const buttonProperties: ButtonProperties = {
 };
 
 const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
-  const [questionItems, setQuestionItems] = useState<QuestionItem[]>([
-    {
-      question: "なぜあなたはインターンに参加したいのですか？",
-      inputValue: "",
-    },
-  ]);
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
 
   const handleChangeInputValue = (index: number, value: string) => {
-    const newQuestionItems = [...questionItems];
+    const newQuestionItems = [...props.items];
     newQuestionItems[index] = { ...newQuestionItems[index], inputValue: value };
 
-    setQuestionItems(newQuestionItems);
+    props.setSubQuestions({ items: newQuestionItems });
   };
 
   const handleNewQuestion = (question: string) => {
-    const newQuestionItems = [...questionItems, { question, inputValue: "" }];
+    const newQuestionItems = [...props.items, { question, inputValue: "" }];
 
-    setQuestionItems(newQuestionItems);
+    props.setSubQuestions({ items: newQuestionItems });
   };
 
   return (
@@ -72,16 +72,16 @@ const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
       value={props.value}
       className={cn(
         "bg-primary text-primary-foreground transition-color duration-200 hover:opacity-100",
-        questionItems[0].inputValue.length > 0 ? "" : "opacity-60",
+        props.items[0].inputValue.length > 0 ? "" : "opacity-60",
       )}
     >
       <AccordionTrigger className="font-medium">
-        なぜあなたはインターンに参加したいのですか？
+        {props.items[0].question}
       </AccordionTrigger>
       <AccordionContent>
         <div className="px-4 ">
-          {questionItems.map((item, index) => {
-            const isDisabled = item.locked || questionItems.length - index > 1;
+          {props.items.map((item, index) => {
+            const isDisabled = item.locked || props.items.length - index > 1;
             const separator = (
               <>
                 <Separator className="mt-8" />
@@ -111,12 +111,12 @@ const QuestionAccordionItem = (props: QuestionAccordionItemProps) => {
             <Button
               className="w-36 font-bold text-primary-foreground hover:text-primary hover:bg-primary-foreground border border-primary-foreground"
               disabled={
-                questionItems[questionItems.length - 1].inputValue.length ===
-                  0 || buttonProperties[buttonState].disabled
+                props.items[props.items.length - 1].inputValue.length === 0 ||
+                buttonProperties[buttonState].disabled
               }
               onClick={() => {
                 setButtonState("loading");
-                questionItems[questionItems.length - 1].locked = true;
+                props.items[props.items.length - 1].locked = true;
 
                 setTimeout(() => {
                   setButtonState("completed");
