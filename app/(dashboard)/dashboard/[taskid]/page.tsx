@@ -2,12 +2,19 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Plus, X } from "lucide-react";
-import React from "react";
-import QuestionCard from "../../_components/QuestionCard";
+import React, { useState } from "react";
+import QuestionCard, { Question } from "../../_components/QuestionCard";
 import { useRouter } from "next/navigation";
 
 const taskHome = () => {
   const router = useRouter();
+  const [questionItems, setQuestionItems] = useState<Question[]>([
+    {
+      inputValue: "",
+      children: [],
+    },
+  ]);
+
   return (
     <div className="px-16 py-4">
       <div className="flex justify-end ">
@@ -36,7 +43,22 @@ const taskHome = () => {
       <div className="px- w-full flex justify-center">
         <div className="mt-10 w-full">
           <p className=" text-xl font-bold mb-2">質問</p>
-          <QuestionCard />
+          {questionItems.map((item, index) => {
+            const setQuestionItem = (value: Question) => {
+              const newQuestionItems = [...questionItems];
+              newQuestionItems[index] = value;
+              setQuestionItems(newQuestionItems);
+            };
+
+            return (
+              <QuestionCard
+                {...item}
+                key={index}
+                setQuestionitem={setQuestionItem}
+              />
+            );
+          })}
+
           <div className="flex justify-start">
             <Button className="mt-6   bg-[#FFFFFF] text-primary hover:text-[#FFFFFF] border border-primary">
               <Plus className="mr-2 h-4 w-4" />
