@@ -3,7 +3,6 @@ import WelcomeMessage from "./WelcomeMessage";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CardModal } from "./CardModal";
 

@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, Loader2, Square, Trash2 } from "lucide-react";
+import { Check, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import QuestionAccordionItem from "./QuestionAccordionItem";
 import type { SubQuestionGroup } from "./QuestionAccordionItem";
@@ -91,7 +85,7 @@ const QuestionCard = (props: QuestionCardProps) => {
           <div className="flex justify-between w-full gap-4 items-center">
             <Checkbox className="border-secondary mt-1" />
             <Textarea
-              readOnly={isCompleted}
+              disabled={isCompleted}
               className={`bg-inherit focus:border-none font-bold  ${isCompleted ? "border-none text-xl" : ""} `}
               placeholder="質問を入力してください。例 : 問1)MIXIのインターンシップで挑戦してみたいことや目的、目標を教えてください (500文字以内)"
               value={props.inputValue}
@@ -126,7 +120,7 @@ const QuestionCard = (props: QuestionCardProps) => {
               </Button>
             </div>
             <div className={cardState === "dug" ? "" : "hidden"}>
-              <p className="mt-4 text-lg mb-4 font-bold text-[#BEBEC1]">
+              <p className="mt-4 text-base mb-4 font-bold text-[#BEBEC1]">
                 以下の3つから回答したい質問を選択してください。
               </p>
               <Accordion type="multiple">
