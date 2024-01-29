@@ -11,32 +11,7 @@ const taskHome = () => {
   const [questionItems, setQuestionItems] = useState<Question[]>([
     {
       inputValue: "",
-      children: [
-        {
-          items: [
-            {
-              question: "なぜあなたはインターンに参加したいのですか？",
-              inputValue: "",
-            },
-          ],
-        },
-        {
-          items: [
-            {
-              question: "なぜあなたはインターンに参加したいのですか？",
-              inputValue: "",
-            },
-          ],
-        },
-        {
-          items: [
-            {
-              question: "なぜあなたはインターンに参加したいのですか？",
-              inputValue: "",
-            },
-          ],
-        },
-      ],
+      children: [],
     },
   ]);
 

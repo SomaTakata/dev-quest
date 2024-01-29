@@ -61,6 +61,22 @@ const QuestionCard = (props: QuestionCardProps) => {
     props.setQuestionitem(newQuestionItem);
   };
 
+  const createSubQuestions = (questions: string[]) => {
+    const newQuestionItem: Question = { ...props };
+    for (const question of questions) {
+      const newSubQuestion: SubQuestionGroup = {
+        items: [
+          {
+            question,
+            inputValue: "",
+          },
+        ],
+      };
+      newQuestionItem.children = [...newQuestionItem.children, newSubQuestion];
+    }
+    props.setQuestionitem(newQuestionItem);
+  };
+
   useEffect(() => {
     setIsActive(props.inputValue.length > 0);
   }, [props.inputValue]);
@@ -94,6 +110,11 @@ const QuestionCard = (props: QuestionCardProps) => {
                     setButtonState("completed");
 
                     setTimeout(() => {
+                      createSubQuestions([
+                        "なぜあなたはインターンに参加したいのですか？",
+                        "なぜあなたはインターンに参加したいのですか？",
+                        "なぜあなたはインターンに参加したいのですか？",
+                      ]);
                       setCardState("dug");
                       setIsCompleted(true);
                     }, 500);
