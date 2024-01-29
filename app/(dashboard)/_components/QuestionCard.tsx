@@ -1,19 +1,14 @@
 "use client";
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, Loader2, Square, Trash2 } from "lucide-react";
+import { Check, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import QuestionAccordionItem from "./QuestionAccordionItem";
+import type { SubQuestionGroup } from "./QuestionAccordionItem";
 
 type ButtonStateType = "available" | "loading" | "completed";
 type CardStateType = "indeterminate" | "dug";
@@ -24,11 +19,17 @@ type ButtonProperties = {
     icon?: JSX.Element;
   };
 };
-
-const QuestionCard = () => {
+export type Question = {
+  id?: string;
+  inputValue: string;
+  children: SubQuestionGroup[];
+};
+export type QuestionCardProps = Question & {
+  setQuestionitem: (value: Question) => void;
+};
+const QuestionCard = (props: QuestionCardProps) => {
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
   const [cardState, setCardState] = useState<CardStateType>("indeterminate");
-  const [inputValue, setInputValue] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
@@ -49,11 +50,32 @@ const QuestionCard = () => {
     },
   };
 
-  useEffect(() => {
-    setIsActive(inputValue.length > 0);
-  }, [inputValue]);
+  const setInputValue = (value: string) => {
+    const newQuestionItem: Question = { ...props, inputValue: value };
+    props.setQuestionitem(newQuestionItem);
+  };
 
-  console.log(inputValue);
+  const createSubQuestions = (questions: string[]) => {
+    const newQuestionItem: Question = { ...props };
+    for (const question of questions) {
+      const newSubQuestion: SubQuestionGroup = {
+        items: [
+          {
+            question,
+            inputValue: "",
+          },
+        ],
+      };
+      newQuestionItem.children = [...newQuestionItem.children, newSubQuestion];
+    }
+    props.setQuestionitem(newQuestionItem);
+  };
+
+  useEffect(() => {
+    setIsActive(props.inputValue.length > 0);
+  }, [props.inputValue]);
+
+  console.log(props.inputValue);
   console.log(isActive);
   console.log(isCompleted);
   return (
@@ -63,10 +85,10 @@ const QuestionCard = () => {
           <div className="flex justify-between w-full gap-4 items-center">
             <Checkbox className="border-secondary mt-1" />
             <Textarea
-              readOnly={isCompleted}
+              disabled={isCompleted}
               className={`bg-inherit focus:border-none font-bold  ${isCompleted ? "border-none text-xl" : ""} `}
               placeholder="質問を入力してください。例 : 問1)MIXIのインターンシップで挑戦してみたいことや目的、目標を教えてください (500文字以内)"
-              value={inputValue}
+              value={props.inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
             <Trash2 size={24} className="text-muted" />
@@ -82,6 +104,11 @@ const QuestionCard = () => {
                     setButtonState("completed");
 
                     setTimeout(() => {
+                      createSubQuestions([
+                        "なぜあなたはインターンに参加したいのですか？",
+                        "なぜあなたはインターンに参加したいのですか？",
+                        "なぜあなたはインターンに参加したいのですか？",
+                      ]);
                       setCardState("dug");
                       setIsCompleted(true);
                     }, 500);
@@ -93,13 +120,33 @@ const QuestionCard = () => {
               </Button>
             </div>
             <div className={cardState === "dug" ? "" : "hidden"}>
-              <p className="mt-4 text-lg mb-4 font-bold text-[#BEBEC1]">
+              <p className="mt-4 text-base mb-4 font-bold text-[#BEBEC1]">
                 以下の3つから回答したい質問を選択してください。
               </p>
               <Accordion type="multiple">
-                <QuestionAccordionItem value="item-1" />
-                <QuestionAccordionItem value="item-2" />
-                <QuestionAccordionItem value="item-3" />
+                {props.children.map((group, index) => {
+                  const setSubQuestions = (value: SubQuestionGroup) => {
+                    const newSubQuestions: SubQuestionGroup[] = [
+                      ...props.children,
+                    ];
+                    newSubQuestions[index] = value;
+
+                    const newQuestionItem: Question = {
+                      ...props,
+                      children: newSubQuestions,
+                    };
+                    props.setQuestionitem(newQuestionItem);
+                  };
+
+                  return (
+                    <QuestionAccordionItem
+                      value={`item-${index}`}
+                      key={index}
+                      items={group.items}
+                      setSubQuestions={setSubQuestions}
+                    />
+                  );
+                })}
               </Accordion>
             </div>
           </div>
