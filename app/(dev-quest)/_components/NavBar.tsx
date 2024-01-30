@@ -3,6 +3,7 @@ import { UserButton, useUser } from "@clerk/nextjs";
 
 const NavBar = () => {
   const { isLoaded, isSignedIn, user } = useUser();
+  console.log(user?.id);
 
   if (!isLoaded || !isSignedIn) {
     return null;
