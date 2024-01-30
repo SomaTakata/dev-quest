@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CardModal } from "./CardModal";
 import { Project } from "@prisma/client";
+import Link from "next/link";
 
 type Props = {
   projects: Project[];
@@ -28,7 +29,9 @@ const DashBoard = ({ projects }: Props) => {
       </div>
       <div className="flex flex-column flex-wrap gap-4">
         {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <Link href={`/dashboard/${project.id}`}>
+            <ProjectCard key={project.id} project={project} />
+          </Link>
         ))}
 
         <Dialog>
