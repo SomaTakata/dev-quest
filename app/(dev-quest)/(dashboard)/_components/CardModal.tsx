@@ -3,7 +3,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { TextForm } from "./TextForm";
+import { CreateProjectForm } from "./CreateProjectForm";
 
 export function CardModal() {
   return (
@@ -15,7 +15,7 @@ export function CardModal() {
           </DialogTitle>
         </DialogHeader>
         <div className="w-full">
-          <TextForm />
+          <CreateProjectForm />
         </div>
       </DialogContent>
     </>
