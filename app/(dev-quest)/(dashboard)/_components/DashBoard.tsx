@@ -29,8 +29,8 @@ const DashBoard = ({ projects }: Props) => {
       </div>
       <div className="flex flex-column flex-wrap gap-4">
         {projects.map((project) => (
-          <Link href={`/dashboard/${project.id}`}>
-            <ProjectCard key={project.id} project={project} />
+          <Link key={project.id} href={`/dashboard/${project.id}`}>
+            <ProjectCard project={project} />
           </Link>
         ))}
 
