@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import { uuid } from "uuidv4";
 import {
   Form,
   FormControl,
@@ -19,30 +18,39 @@ import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  companyName: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  companyName: z.string().min(1, {
+    message: "必須項目です",
   }),
-  date: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  id: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  deadline: z.string().min(1, {
+    message: "必須項目です",
   }),
 });
-export function TextForm() {
+export function CreateProjectForm() {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       companyName: "",
-      date: "",
-      id: uuid(),
+      deadline: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    router.push(`/dashboard/${uuid}`);
+
+    values.deadline = new Date(values.deadline).toISOString();
+
+    // /api/project に POST
+    fetch("/api/project", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+      .then((res) => res.json())
+      .then((data) => router.push(`/dashboard/${data.uuid}`))
+      .catch((error) => console.error(error));
   }
 
   return (
@@ -63,7 +71,7 @@ export function TextForm() {
         />
         <FormField
           control={form.control}
-          name="date"
+          name="deadline"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="font-bold">期限</FormLabel>
