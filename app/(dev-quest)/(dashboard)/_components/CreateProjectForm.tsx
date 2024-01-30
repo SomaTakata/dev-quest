@@ -36,8 +36,6 @@ export function CreateProjectForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-
     values.deadline = new Date(values.deadline).toISOString();
 
     // /api/project に POST
