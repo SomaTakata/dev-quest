@@ -22,7 +22,7 @@ const SideBar = () => {
           className=" text-white cursor-pointer font-medium flex gap-3 pl-10   mt-10"
         >
           <Ghost className="h-6 w-6" />
-          <div>DevQuest</div>
+          <div>Dev Quest</div>
         </div>
         <div className="flex flex-col mt-24 text-sm">
           <div
