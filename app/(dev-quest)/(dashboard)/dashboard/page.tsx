@@ -18,5 +18,9 @@ export default async function Home() {
     });
   }
 
-  return <DashBoard />;
+  const projects = await prisma.project.findMany({
+    where: { userId: user!.id },
+  });
+
+  return <DashBoard projects={projects} />;
 }
