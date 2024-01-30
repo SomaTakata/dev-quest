@@ -74,7 +74,12 @@ export function CreateProjectForm() {
             <FormItem>
               <FormLabel className="font-bold">期限</FormLabel>
               <FormControl>
-                <Input type="date" placeholder="2023/03/14" {...field} />
+                <Input
+                  type="date"
+                  min={new Date().toISOString().slice(0, 10)}
+                  placeholder="2023/03/14"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
