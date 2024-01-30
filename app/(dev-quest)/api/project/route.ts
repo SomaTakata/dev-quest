@@ -10,14 +10,22 @@ export async function POST(req: NextRequest) {
   const companyName = data.companyName;
   const deadline = data.deadline;
 
-  const createdProject = await prisma.project.create({
-    data: {
-      userId: user!.id,
-      companyName,
-      deadline,
-    },
-  });
+  try {
+    const createdProject = await prisma.project.create({
+      data: {
+        userId: user!.id,
+        companyName,
+        deadline,
+      },
+    });
 
-  // prisma の処理
-  return NextResponse.json({ uuid: createdProject.id }, { status: 201 });
+    return NextResponse.json({ uuid: createdProject.id }, { status: 201 });
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
 }
