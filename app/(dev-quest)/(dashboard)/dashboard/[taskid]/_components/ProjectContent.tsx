@@ -58,7 +58,7 @@ const ProjectContent = ({ project }: Props) => {
             };
 
             return (
-              <QuestionCard
+              <QuestionBoard
                 {...item}
                 key={index}
                 setQuestionitem={setQuestionItem}

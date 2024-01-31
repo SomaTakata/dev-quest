@@ -7,9 +7,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import QuestionAccordionItem from "./QuestionAccordionItem";
-import type { SubQuestionGroup } from "./QuestionAccordionItem";
-import SubQuestion from "../dashboard/[taskid]/_components/SubQuestion";
+import QuestionAccordionItem from "../../../_components/QuestionAccordionItem";
+import type { SubQuestionGroup } from "../../../_components/QuestionAccordionItem";
+import SubQuestion from "./SubQuestion";
 
 type ButtonStateType = "available" | "loading" | "completed";
 type CardStateType = "indeterminate" | "dug";
@@ -28,7 +28,7 @@ export type Question = {
 export type QuestionCardProps = Question & {
   setQuestionitem: (value: Question) => void;
 };
-const QuestionCard = (props: QuestionCardProps) => {
+const QuestionBoard = (props: QuestionCardProps) => {
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
   const [cardState, setCardState] = useState<CardStateType>("indeterminate");
   const [isCompleted, setIsCompleted] = useState(false);
@@ -84,8 +84,6 @@ const QuestionCard = (props: QuestionCardProps) => {
       <div className="flex">
         <div className="w-full">
           <Question/>
-
-            {/* SubQuestion & SubSubQuestion */}
             <SubQuestion />
           </div>
         </div>
@@ -94,4 +92,4 @@ const QuestionCard = (props: QuestionCardProps) => {
   );
 };
 
-export default QuestionCard;
+export default QuestionBoard;
