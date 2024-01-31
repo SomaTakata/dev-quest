@@ -11,7 +11,7 @@ type Props = {
   project: Project;
 };
 
-const taskHome = ({ project }: Props) => {
+const ProjectContent = ({ project }: Props) => {
   const router = useRouter();
   const [questionItems, setQuestionItems] = useState<Question[]>([
     {
@@ -78,4 +78,4 @@ const taskHome = ({ project }: Props) => {
   );
 };
 
-export default taskHome;
+export default ProjectContent;

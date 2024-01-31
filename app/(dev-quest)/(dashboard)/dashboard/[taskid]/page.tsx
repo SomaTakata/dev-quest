@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import QuestionPage from "./_components/QuestionPage";
+import ProjectContent from "./_components/ProjectContent";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -17,7 +17,7 @@ const taskHome = async ({ params }: Props) => {
     return notFound();
   }
 
-  return <QuestionPage project={project} />;
+  return <ProjectContent project={project} />;
 };
 
 export default taskHome;
