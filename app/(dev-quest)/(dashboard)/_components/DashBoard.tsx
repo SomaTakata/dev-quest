@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import WelcomeMessage from "./WelcomeMessage";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
@@ -11,6 +12,21 @@ import Link from "next/link";
 type Props = {
   projects: Project[];
 };
+
+function handleDelete(projectID: string) {
+  // /api/project/[id] に DELETE
+  fetch(`/api/project/${projectID}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: projectID,
+    }),
+  })
+    .then((res) => res.json())
+    .catch((error) => console.error(error));
+}
 
 const DashBoard = ({ projects }: Props) => {
   return (
@@ -56,9 +72,13 @@ type ProjectCardProps = {
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
-    <Card className="w-[300px] h-[220px] p-3">
+    <Card className="w-[300px] h-[220px] p-4">
       <div className="flex justify-end">
-        <MoreHorizontal size={22} className="text-[#8F8F8F] mr-2" />
+        <MoreHorizontal
+          size={22}
+          className="text-[#8F8F8F] mr-2"
+          onClick={() => handleDelete(project.id)}
+        />
       </div>
       <div className="px-6 space-y-2">
         <p className=" font-bold text-xl">{project.companyName}</p>
