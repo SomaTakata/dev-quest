@@ -1,24 +1,18 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Plus, X } from "lucide-react";
-import React, { useState } from "react";
-import QuestionCard, { Question } from "../../../_components/QuestionCard";
-import { useRouter } from "next/navigation";
+import QuestionCard from "./QuestionCard";
 import { Project } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
 type Props = {
   project: Project;
 };
 
-const ProjectContent = ({ project }: Props) => {
-  const router = useRouter();
-  const [questionItems, setQuestionItems] = useState<Question[]>([
-    {
-      inputValue: "",
-      children: [],
-    },
-  ]);
+const ProjectContent = async ({ project }: Props) => {
+  const questions = await prisma.question.findMany({
+    where: { projectId: project.id },
+  });
 
   return (
     <div className="px-16 py-4">
@@ -32,12 +26,7 @@ const ProjectContent = ({ project }: Props) => {
       </div>
       <div className="flex flex-row justify-between items-center mb-8 mt-6">
         <h1 className="font-bold text-3xl underline ">{project.companyName}</h1>
-        <X
-          size={36}
-          onClick={() => {
-            router.push("/dashboard");
-          }}
-        />
+        <X href="/dashboard" size={36} />
       </div>
       <div className="px-2  flex gap-8 items-center w-full">
         <p className=" text-sm font-bold text-accent-foreground text-nowrap">
@@ -50,21 +39,9 @@ const ProjectContent = ({ project }: Props) => {
       <div className="px- w-full flex justify-center">
         <div className="mt-10 w-full">
           <p className=" text-xl font-bold mb-2">質問</p>
-          {questionItems.map((item, index) => {
-            const setQuestionItem = (value: Question) => {
-              const newQuestionItems = [...questionItems];
-              newQuestionItems[index] = value;
-              setQuestionItems(newQuestionItems);
-            };
-
-            return (
-              <QuestionCard
-                {...item}
-                key={index}
-                setQuestionitem={setQuestionItem}
-              />
-            );
-          })}
+          {questions.map((item, index) => (
+            <QuestionCard question={item} key={index} />
+          ))}
 
           <div className="flex justify-start">
             <Button className="mt-6   bg-[#FFFFFF] text-primary hover:text-[#FFFFFF] border border-primary">

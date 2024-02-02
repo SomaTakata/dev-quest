@@ -9,6 +9,7 @@ import { Check, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import QuestionAccordionItem from "./QuestionAccordionItem";
 import type { SubQuestionGroup } from "./QuestionAccordionItem";
+import { Question } from "@prisma/client";
 
 type ButtonStateType = "available" | "loading" | "completed";
 type CardStateType = "indeterminate" | "dug";
@@ -19,13 +20,10 @@ type ButtonProperties = {
     icon?: JSX.Element;
   };
 };
-export type Question = {
-  id?: string;
-  inputValue: string;
-  children: SubQuestionGroup[];
-};
-export type QuestionCardProps = Question & {
-  setQuestionitem: (value: Question) => void;
+
+export type QuestionCardProps = {
+  question: Question;
+  // setQuestionitem: (value: Question) => void;
 };
 const QuestionCard = (props: QuestionCardProps) => {
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
@@ -50,34 +48,31 @@ const QuestionCard = (props: QuestionCardProps) => {
     },
   };
 
-  const setInputValue = (value: string) => {
-    const newQuestionItem: Question = { ...props, inputValue: value };
-    props.setQuestionitem(newQuestionItem);
-  };
+  // const setInputValue = (value: string) => {
+  //   const newQuestionItem: Question = { ...props, inputValue: value };
+  //   props.setQuestionitem(newQuestionItem);
+  // };
 
-  const createSubQuestions = (questions: string[]) => {
-    const newQuestionItem: Question = { ...props };
-    for (const question of questions) {
-      const newSubQuestion: SubQuestionGroup = {
-        items: [
-          {
-            question,
-            inputValue: "",
-          },
-        ],
-      };
-      newQuestionItem.children = [...newQuestionItem.children, newSubQuestion];
-    }
-    props.setQuestionitem(newQuestionItem);
-  };
+  // const createSubQuestions = (questions: string[]) => {
+  //   const newQuestionItem: Question = { ...props };
+  //   for (const question of questions) {
+  //     const newSubQuestion: SubQuestionGroup = {
+  //       items: [
+  //         {
+  //           question,
+  //           inputValue: "",
+  //         },
+  //       ],
+  //     };
+  //     newQuestionItem.children = [...newQuestionItem.children, newSubQuestion];
+  //   }
+  //   // props.setQuestionitem(newQuestionItem);
+  // };
 
-  useEffect(() => {
-    setIsActive(props.inputValue.length > 0);
-  }, [props.inputValue]);
+  // useEffect(() => {
+  //   setIsActive(props.inputValue.length > 0);
+  // }, [props.inputValue]);
 
-  console.log(props.inputValue);
-  console.log(isActive);
-  console.log(isCompleted);
   return (
     <Card className=" min-h-[178px] px-6 py-8 rounded-sm">
       <div className="flex">
@@ -124,29 +119,29 @@ const QuestionCard = (props: QuestionCardProps) => {
                 以下の3つから回答したい質問を選択してください。
               </p>
               <Accordion type="multiple">
-                {props.children.map((group, index) => {
-                  const setSubQuestions = (value: SubQuestionGroup) => {
-                    const newSubQuestions: SubQuestionGroup[] = [
-                      ...props.children,
-                    ];
-                    newSubQuestions[index] = value;
+                {/* {props.children.map((group, index) => {
+                  // const setSubQuestions = (value: SubQuestionGroup) => {
+                  //   const newSubQuestions: SubQuestionGroup[] = [
+                  //     ...props.children,
+                  //   ];
+                  //   newSubQuestions[index] = value;
 
-                    const newQuestionItem: Question = {
-                      ...props,
-                      children: newSubQuestions,
-                    };
-                    props.setQuestionitem(newQuestionItem);
-                  };
+                  //   const newQuestionItem: Question = {
+                  //     ...props,
+                  //     children: newSubQuestions,
+                  //   };
+                  //   props.setQuestionitem(newQuestionItem);
+                  // };
 
                   return (
                     <QuestionAccordionItem
                       value={`item-${index}`}
                       key={index}
                       items={group.items}
-                      setSubQuestions={setSubQuestions}
+                      // setSubQuestions={setSubQuestions}
                     />
                   );
-                })}
+                })} */}
               </Accordion>
             </div>
           </div>
