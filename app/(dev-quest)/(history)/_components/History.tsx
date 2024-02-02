@@ -7,8 +7,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import HistoryCard from "./HistoryCard";
+import { PrismaClient } from "@prisma/client";
+import Link from "next/link";
 
-const History = () => {
+export async function History() {
+  const prisma = new PrismaClient();
+  const project = await prisma.project.findMany();
+  const question = await prisma.question.findMany();
   return (
     <div className="px-16 mt-10 mb-10">
       <div className="flex flex-col justify-between items-center ">
@@ -27,52 +32,25 @@ const History = () => {
           </div>
         </div>
         <div className="w-full flex flex-col gap-4">
-          <HistoryCard
-            company="株式会社MIXI"
-            date="2024/01/16 at 1:25AM"
-            important={true}
-            question="なぜあなたはインターンに参加したいのですか？"
-            body="フロントエンド開発の知識を深めたいと考えています。特に、Reactを使用したプロジェクトに携わりたいです。"
-          />
-          <HistoryCard
-            company="株式会社MIXI"
-            date="2024/01/16 at 1:25AM"
-            important={true}
-            question="なぜあなたはインターンに参加したいのですか？"
-            body="フロントエンド開発の知識を深めたいと考えています。特に、Reactを使用したプロジェクトに携わりたいです。"
-          />
-          <HistoryCard
-            company="株式会社MIXI"
-            date="2024/01/16 at 1:25AM"
-            important={true}
-            question="なぜあなたはインターンに参加したいのですか？"
-            body="フロントエンド開発の知識を深めたいと考えています。特に、Reactを使用したプロジェクトに携わりたいです。"
-          />
-          <HistoryCard
-            company="株式会社MIXI"
-            date="2024/01/16 at 1:25AM"
-            important={true}
-            question="なぜあなたはインターンに参加したいのですか？"
-            body="フロントエンド開発の知識を深めたいと考えています。特に、Reactを使用したプロジェクトに携わりたいです。"
-          />
-          <HistoryCard
-            company="株式会社MIXI"
-            date="2024/01/16 at 1:25AM"
-            important={true}
-            question="なぜあなたはインターンに参加したいのですか？"
-            body="フロントエンド開発の知識を深めたいと考えています。特に、Reactを使用したプロジェクトに携わりたいです。"
-          />
-          <HistoryCard
-            company="株式会社MIXI"
-            date="2024/01/16 at 1:25AM"
-            important={true}
-            question="なぜあなたはインターンに参加したいのですか？"
-            body="フロントエンド開発の知識を深めたいと考えています。特に、Reactを使用したプロジェクトに携わりたいです。"
-          />
+          {question.map((item) => {
+            const companyName = project.filter(
+              (projectItem) => projectItem.id === item.projectId,
+            )[0].companyName;
+
+            return (
+              <Link href={`/dashboard/${item.projectId}`}>
+                <HistoryCard
+                  company={companyName}
+                  date={item.createdAt.toLocaleString()}
+                  important={true}
+                  question={item.content}
+                  body="_" // TODO: 質問文を表示させる
+                />
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>
   );
-};
-
-export default History;
+}
