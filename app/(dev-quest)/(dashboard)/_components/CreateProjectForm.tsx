@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
+import { clientApi } from "../../_trpc/client-api";
 
 const formSchema = z.object({
   companyName: z.string().min(1, {
@@ -26,6 +27,8 @@ const formSchema = z.object({
   }),
 });
 export function CreateProjectForm() {
+  const questionMutation = clientApi.question.add.useMutation();
+
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,7 +50,13 @@ export function CreateProjectForm() {
       body: JSON.stringify(values),
     })
       .then((res) => res.json())
-      .then((data) => router.push(`/dashboard/${data.uuid}`))
+      .then((data) => {
+        questionMutation.mutate({
+          projectId: data.uuid,
+          content: "",
+        });
+        router.push(`/dashboard/${data.uuid}`);
+      })
       .catch((error) => console.error(error));
   }
 
