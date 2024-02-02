@@ -32,9 +32,10 @@ export type Question = {
 type Props = {
   questionId: string;
   content: string;
+  locked: boolean;
 };
 
-const QuestionCard = ({ questionId, content }: Props) => {
+const QuestionCard = ({ questionId, content, locked }: Props) => {
   const [inputValue, setInputValue] = useState(content);
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
   const [cardState, setCardState] = useState<CardStateType>("indeterminate");
@@ -88,6 +89,7 @@ const QuestionCard = ({ questionId, content }: Props) => {
       },
       body: JSON.stringify({
         content: question,
+        locked: true,
       }),
     }).then((e) => console.log(e));
     setButtonState("loading");
@@ -132,7 +134,7 @@ const QuestionCard = ({ questionId, content }: Props) => {
   }, [inputValue]);
 
   console.log(isActive);
-  console.log(isCompleted);
+  console.log(locked);
   return (
     <Card className=" min-h-[178px] px-6 py-8 rounded-sm my-4">
       <div className="flex">
@@ -140,8 +142,8 @@ const QuestionCard = ({ questionId, content }: Props) => {
           <div className="flex justify-between w-full gap-4 items-center">
             <Checkbox className="border-secondary mt-1" />
             <Textarea
-              disabled={isCompleted}
-              className={`bg-inherit focus:border-none font-bold  ${isCompleted ? "border-none text-xl" : ""} `}
+              disabled={locked}
+              className={`bg-inherit focus:border-none font-bold  ${locked ? "border-none text-xl" : ""} `}
               placeholder="質問を入力してください。例 : 問1)MIXIのインターンシップで挑戦してみたいことや目的、目標を教えてください (500文字以内)"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}

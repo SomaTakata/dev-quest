@@ -56,7 +56,11 @@ const ProjectContent = ({ project }: Props) => {
           <div className="">
             {questions.data ? (
               questions.data.map((item) => (
-                <QuestionCard questionId={item.id} content={item.content} />
+                <QuestionCard
+                  questionId={item.id}
+                  content={item.content}
+                  locked={item.locked}
+                />
               ))
             ) : (
               <div>Loading...</div>
