@@ -20,6 +20,9 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
   const subMutation = clientApi.subQuestion.add.useMutation();
   const subSubMutation = clientApi.subSubQuestion.add.useMutation();
 
+  const [response, setResponse] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const subQuestions = clientApi.subQuestion.all.useQuery({
     questionId: question.id,
   });
@@ -45,6 +48,32 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
         questionContent: item,
       });
     });
+  };
+
+  const handleSubmit = async (question: string) => {
+    console.log(question);
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setResponse(data);
+      setErrorMessage("");
+      console.log(response);
+    } catch (error) {
+      console.error("Submission error:", error);
+    }
   };
 
   return (
