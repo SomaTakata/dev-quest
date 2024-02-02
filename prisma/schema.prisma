@@ -27,6 +27,7 @@ model Question {
   id          String       @id @default(cuid())
   projectId   String
   content     String
+  answer      String
   checked     Boolean      @default(false)
   createdAt   DateTime     @default(now())
   subQuestions SubQuestion[]
