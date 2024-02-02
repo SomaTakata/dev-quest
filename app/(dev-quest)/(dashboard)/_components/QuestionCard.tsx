@@ -33,6 +33,9 @@ const QuestionCard = (props: QuestionCardProps) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
+  const [question, setQuestion] = useState("");
+  const [response, setResponse] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const buttonProperties: ButtonProperties = {
     available: {
       text: "質問を深掘る",
@@ -75,9 +78,32 @@ const QuestionCard = (props: QuestionCardProps) => {
     setIsActive(props.inputValue.length > 0);
   }, [props.inputValue]);
 
-  console.log(props.inputValue);
-  console.log(isActive);
-  console.log(isCompleted);
+  const handleSubmit = async () => {
+    console.log("start");
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question: { question },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setResponse(data);
+      setErrorMessage("");
+      console.log(response);
+    } catch (error) {
+      console.error("Submission error:", error);
+    }
+  };
+
   return (
     <Card className=" min-h-[178px] px-6 py-8 rounded-sm">
       <div className="flex">
@@ -89,7 +115,7 @@ const QuestionCard = (props: QuestionCardProps) => {
               className={`bg-inherit focus:border-none font-bold  ${isCompleted ? "border-none text-xl" : ""} `}
               placeholder="質問を入力してください。例 : 問1)MIXIのインターンシップで挑戦してみたいことや目的、目標を教えてください (500文字以内)"
               value={props.inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => setQuestion(e.target.value)}
             />
             <Trash2 size={24} className="text-muted" />
           </div>
@@ -118,6 +144,7 @@ const QuestionCard = (props: QuestionCardProps) => {
                 {buttonProperties[buttonState].icon}
                 {buttonProperties[buttonState].text}
               </Button>
+              <Button onClick={() => handleSubmit()}>aaa</Button>
             </div>
             <div className={cardState === "dug" ? "" : "hidden"}>
               <p className="mt-4 text-base mb-4 font-bold text-[#BEBEC1]">
