@@ -33,7 +33,6 @@ const QuestionCard = (props: QuestionCardProps) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
-  const [question, setQuestion] = useState("");
   const [response, setResponse] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const buttonProperties: ButtonProperties = {
@@ -73,13 +72,14 @@ const QuestionCard = (props: QuestionCardProps) => {
     }
     props.setQuestionitem(newQuestionItem);
   };
+  console.log(response);
 
   useEffect(() => {
     setIsActive(props.inputValue.length > 0);
   }, [props.inputValue]);
 
-  const handleSubmit = async () => {
-    console.log("start");
+  const handleSubmit = async (question: string) => {
+    console.log(question);
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -87,7 +87,7 @@ const QuestionCard = (props: QuestionCardProps) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          question: { question },
+          question,
         }),
       });
 
@@ -115,7 +115,7 @@ const QuestionCard = (props: QuestionCardProps) => {
               className={`bg-inherit focus:border-none font-bold  ${isCompleted ? "border-none text-xl" : ""} `}
               placeholder="質問を入力してください。例 : 問1)MIXIのインターンシップで挑戦してみたいことや目的、目標を教えてください (500文字以内)"
               value={props.inputValue}
-              onChange={(e) => setQuestion(e.target.value)}
+              onChange={(e) => setInputValue(e.target.value)}
             />
             <Trash2 size={24} className="text-muted" />
           </div>
@@ -125,6 +125,7 @@ const QuestionCard = (props: QuestionCardProps) => {
                 className={`mt-6 w-full text-base  bg-primary py-6`}
                 disabled={buttonProperties[buttonState].disabled}
                 onClick={() => {
+                  handleSubmit(props.inputValue);
                   setButtonState("loading");
                   setTimeout(() => {
                     setButtonState("completed");
@@ -144,7 +145,6 @@ const QuestionCard = (props: QuestionCardProps) => {
                 {buttonProperties[buttonState].icon}
                 {buttonProperties[buttonState].text}
               </Button>
-              <Button onClick={() => handleSubmit()}>aaa</Button>
             </div>
             <div className={cardState === "dug" ? "" : "hidden"}>
               <p className="mt-4 text-base mb-4 font-bold text-[#BEBEC1]">
