@@ -20,4 +20,21 @@ export const subSubQuestionRouter = router({
         },
       });
     }),
+  add: publicProcedure
+    .input(
+      z.object({
+        subQuestionId: z.string(),
+        questionContent: z.string(),
+      }),
+    )
+    .mutation(({ input }) => {
+      return prisma.subSubQuestion.create({
+        data: {
+          subQuestionId: input.subQuestionId,
+          questionContent: input.questionContent,
+          answerContent: "",
+          level: 0,
+        },
+      });
+    }),
 });

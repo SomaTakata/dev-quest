@@ -17,10 +17,35 @@ export type QuestionCardProps = {
 };
 const QuestionCard = ({ question }: QuestionCardProps) => {
   const [questionText, setQuestionText] = useState<string>(question.content);
+  const subMutation = clientApi.subQuestion.add.useMutation();
+  const subSubMutation = clientApi.subSubQuestion.add.useMutation();
 
   const subQuestions = clientApi.subQuestion.all.useQuery({
     questionId: question.id,
   });
+
+  // データベースからの取得時、すでに内容があったら
+  // FIXME: 編集途中で離れると、いじれなくなる
+  const hasAlreadyCompleted = question.content === "";
+
+  const handleDiggingButton = async () => {
+    const generatedQuestions = [
+      "あなたはなぜ、その職業になりたいのですか？",
+      "あなたが活躍したいと考える原動力はなんですか？",
+      "あなたの心が動くときはどのようなときですか？",
+    ];
+
+    const sub = await subMutation.mutateAsync({
+      questionId: question.id,
+    });
+
+    generatedQuestions.map((item) => {
+      subSubMutation.mutate({
+        subQuestionId: sub.id,
+        questionContent: item,
+      });
+    });
+  };
 
   return (
     <Card className=" min-h-[178px] px-6 py-8 rounded-sm">
@@ -29,6 +54,7 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
           <div className="flex justify-between w-full gap-4 items-center">
             <Checkbox className="border-secondary mt-1" />
             <Textarea
+              disabled={!hasAlreadyCompleted}
               value={questionText}
               onChange={(e) => setQuestionText(e.target.value)}
               className={"bg-inherit focus:border-none font-bold"}
@@ -38,14 +64,17 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
           </div>
           <div className="px-8">
             {/* 深掘りするボタン、SubQuestion を生成したら消す */}
-            <div className="hidden">
-              <Button className="mt-6 w-full text-base bg-primary py-6">
+            <div hidden={!hasAlreadyCompleted}>
+              <Button
+                className="mt-6 w-full text-base bg-primary py-6"
+                onClick={handleDiggingButton}
+              >
                 深掘りする
               </Button>
             </div>
 
             {/* SubQuestion の一覧 */}
-            <div>
+            <div hidden={hasAlreadyCompleted}>
               <p className="mt-4 text-base mb-4 font-bold text-[#BEBEC1]">
                 以下の3つから回答したい質問を選択してください。
               </p>

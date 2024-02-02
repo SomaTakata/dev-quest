@@ -19,7 +19,7 @@ const ProjectContent = ({ project }: Props) => {
     mutation
       .mutateAsync({
         projectId: project.id,
-        content: "新しい質問",
+        content: "",
       })
       .then(() => {
         questions.refetch();

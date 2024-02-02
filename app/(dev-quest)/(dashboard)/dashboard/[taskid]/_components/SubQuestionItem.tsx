@@ -6,10 +6,10 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { clientApi } from "@/app/(dev-quest)/_trpc/client-api";
 import { SubQuestion } from "@prisma/client";
+import SubSubQuestionItem from "./SubSubQuestionItem";
 
 type Props = {
   subQuestion: SubQuestion;
@@ -20,7 +20,7 @@ const SubQuestionItem = ({ subQuestion }: Props) => {
     subQuestionId: subQuestion.id,
   });
 
-  if (!subSubQuestions.data) {
+  if (!subSubQuestions.data || !subSubQuestions.data[0]) {
     return <div>Loading...</div>;
   }
 
@@ -42,10 +42,7 @@ const SubQuestionItem = ({ subQuestion }: Props) => {
               ) : (
                 <></>
               )}
-              <Textarea
-                className={`bg-[#FFFFFF] text-secondary py-2`}
-                placeholder="回答を記入してください"
-              />
+              <SubSubQuestionItem subSubQuestion={item} />
             </div>
           ))}
 
