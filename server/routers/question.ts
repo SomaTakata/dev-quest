@@ -32,6 +32,7 @@ export const questionRouter = router({
         data: {
           content: input.content,
           projectId: input.projectId,
+          answer: "",
         },
       });
     }),
