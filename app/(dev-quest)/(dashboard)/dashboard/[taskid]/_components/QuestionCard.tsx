@@ -7,75 +7,77 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import SubQuestionItem from "./SubQuestionItem";
-import type { SubQuestionGroup } from "./SubQuestionItem";
-import { Question } from "@prisma/client";
-import { clientApi } from "@/app/(dev-quest)/_trpc/client-api";
+import QuestionAccordionItem from "./QuestionAccordionItem";
+import type { SubQuestionGroup } from "./QuestionAccordionItem";
 
-export type QuestionCardProps = {
-  question: Question;
+type ButtonStateType = "available" | "loading" | "completed";
+type CardStateType = "indeterminate" | "dug";
+type ButtonProperties = {
+  [state in ButtonStateType]: {
+    text: string;
+    disabled?: boolean;
+    icon?: JSX.Element;
+  };
 };
-const QuestionCard = ({ question }: QuestionCardProps) => {
-  const [questionText, setQuestionText] = useState<string>(question.content);
-  const subMutation = clientApi.subQuestion.add.useMutation();
-  const subSubMutation = clientApi.subSubQuestion.add.useMutation();
+export type Question = {
+  id?: string;
+  inputValue: string;
+  children: SubQuestionGroup[];
+};
+export type QuestionCardProps = Question & {
+  setQuestionitem: (value: Question) => void;
+};
+const QuestionCard = (props: QuestionCardProps) => {
+  const [buttonState, setButtonState] = useState<ButtonStateType>("available");
+  const [cardState, setCardState] = useState<CardStateType>("indeterminate");
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
-  const [response, setResponse] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const subQuestions = clientApi.subQuestion.all.useQuery({
-    questionId: question.id,
-  });
-
-  // データベースからの取得時、すでに内容があったら
-  // FIXME: 編集途中で離れると、いじれなくなる
-  const hasAlreadyCompleted = question.content === "";
-
-  const handleDiggingButton = async () => {
-    const generatedQuestions = [
-      "あなたはなぜ、その職業になりたいのですか？",
-      "あなたが活躍したいと考える原動力はなんですか？",
-      "あなたの心が動くときはどのようなときですか？",
-    ];
-
-    const sub = await subMutation.mutateAsync({
-      questionId: question.id,
-    });
-
-    generatedQuestions.map((item) => {
-      subSubMutation.mutate({
-        subQuestionId: sub.id,
-        questionContent: item,
-      });
-    });
+  const buttonProperties: ButtonProperties = {
+    available: {
+      text: "質問を深掘る",
+      disabled: !isActive,
+    },
+    loading: {
+      text: "深掘り中",
+      disabled: true,
+      icon: <Loader2 className="mr-2 h-4 w-4 animate-spin" />,
+    },
+    completed: {
+      text: "深堀完了",
+      disabled: true,
+      icon: <Check className="mr-2 h-4 w-4" />,
+    },
   };
 
-  const handleSubmit = async (question: string) => {
-    console.log(question);
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          question,
-        }),
-      });
+  const setInputValue = (value: string) => {
+    const newQuestionItem: Question = { ...props, inputValue: value };
+    props.setQuestionitem(newQuestionItem);
+  };
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      setResponse(data);
-      setErrorMessage("");
-      console.log(response);
-    } catch (error) {
-      console.error("Submission error:", error);
+  const createSubQuestions = (questions: string[]) => {
+    const newQuestionItem: Question = { ...props };
+    for (const question of questions) {
+      const newSubQuestion: SubQuestionGroup = {
+        items: [
+          {
+            question,
+            inputValue: "",
+          },
+        ],
+      };
+      newQuestionItem.children = [...newQuestionItem.children, newSubQuestion];
     }
+    props.setQuestionitem(newQuestionItem);
   };
 
+  useEffect(() => {
+    setIsActive(props.inputValue.length > 0);
+  }, [props.inputValue]);
+
+  console.log(props.inputValue);
+  console.log(isActive);
+  console.log(isCompleted);
   return (
     <Card className=" min-h-[178px] px-6 py-8 rounded-sm">
       <div className="flex">
@@ -83,37 +85,68 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
           <div className="flex justify-between w-full gap-4 items-center">
             <Checkbox className="border-secondary mt-1" />
             <Textarea
-              disabled={!hasAlreadyCompleted}
-              value={questionText}
-              onChange={(e) => setQuestionText(e.target.value)}
-              className={"bg-inherit focus:border-none font-bold"}
+              disabled={isCompleted}
+              className={`bg-inherit focus:border-none font-bold  ${isCompleted ? "border-none text-xl" : ""} `}
               placeholder="質問を入力してください。例 : 問1)MIXIのインターンシップで挑戦してみたいことや目的、目標を教えてください (500文字以内)"
+              value={props.inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
             />
             <Trash2 size={24} className="text-muted" />
           </div>
-          {/* FIXME: 実装完了次第、hidden=true を外す */}
-          <div className="px-8" hidden={true}>
-            {/* 深掘りするボタン、SubQuestion を生成したら消す */}
-            <div hidden={!hasAlreadyCompleted}>
+          <div className="px-8">
+            <div className={cardState === "indeterminate" ? "" : "hidden"}>
               <Button
-                className="mt-6 w-full text-base bg-primary py-6"
-                onClick={handleDiggingButton}
+                className={`mt-6 w-full text-base  bg-primary py-6`}
+                disabled={buttonProperties[buttonState].disabled}
+                onClick={() => {
+                  setButtonState("loading");
+                  setTimeout(() => {
+                    setButtonState("completed");
+
+                    setTimeout(() => {
+                      createSubQuestions([
+                        "なぜあなたはインターンに参加したいのですか？",
+                        "なぜあなたはインターンに参加したいのですか？",
+                        "なぜあなたはインターンに参加したいのですか？",
+                      ]);
+                      setCardState("dug");
+                      setIsCompleted(true);
+                    }, 500);
+                  }, 3000);
+                }}
               >
-                深掘りする
+                {buttonProperties[buttonState].icon}
+                {buttonProperties[buttonState].text}
               </Button>
             </div>
-
-            {/* SubQuestion の一覧 */}
-            <div hidden={hasAlreadyCompleted}>
+            <div className={cardState === "dug" ? "" : "hidden"}>
               <p className="mt-4 text-base mb-4 font-bold text-[#BEBEC1]">
                 以下の3つから回答したい質問を選択してください。
               </p>
               <Accordion type="multiple">
-                {subQuestions.data
-                  ? subQuestions.data.map((item) => (
-                      <SubQuestionItem key={item.id} subQuestion={item} />
-                    ))
-                  : "Loading..."}
+                {props.children.map((group, index) => {
+                  const setSubQuestions = (value: SubQuestionGroup) => {
+                    const newSubQuestions: SubQuestionGroup[] = [
+                      ...props.children,
+                    ];
+                    newSubQuestions[index] = value;
+
+                    const newQuestionItem: Question = {
+                      ...props,
+                      children: newSubQuestions,
+                    };
+                    props.setQuestionitem(newQuestionItem);
+                  };
+
+                  return (
+                    <QuestionAccordionItem
+                      value={`item-${index}`}
+                      key={index}
+                      items={group.items}
+                      setSubQuestions={setSubQuestions}
+                    />
+                  );
+                })}
               </Accordion>
             </div>
           </div>
