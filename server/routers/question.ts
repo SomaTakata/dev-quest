@@ -9,9 +9,12 @@ export const questionRouter = router({
         projectId: z.string(),
       }),
     )
-    .query(() => {
+    .query(({ input }) => {
       // 古い順に並べる
       return prisma.question.findMany({
+        where: {
+          projectId: input.projectId,
+        },
         orderBy: {
           createdAt: "asc",
         },

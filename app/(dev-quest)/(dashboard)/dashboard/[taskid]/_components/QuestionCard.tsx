@@ -7,15 +7,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Check, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import QuestionAccordionItem from "./QuestionAccordionItem";
-import type { SubQuestionGroup } from "./QuestionAccordionItem";
+import SubQuestionItem from "./SubQuestionItem";
+import type { SubQuestionGroup } from "./SubQuestionItem";
 import { Question } from "@prisma/client";
+import { clientApi } from "@/app/(dev-quest)/_trpc/client-api";
 
 export type QuestionCardProps = {
   question: Question;
 };
 const QuestionCard = ({ question }: QuestionCardProps) => {
   const [questionText, setQuestionText] = useState<string>(question.content);
+
+  const subQuestions = clientApi.subQuestion.all.useQuery({
+    questionId: question.id,
+  });
 
   return (
     <Card className=" min-h-[178px] px-6 py-8 rounded-sm">
@@ -45,9 +50,11 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
                 以下の3つから回答したい質問を選択してください。
               </p>
               <Accordion type="multiple">
-                <QuestionAccordionItem value="item-1" />
-                <QuestionAccordionItem value="item-1" />
-                <QuestionAccordionItem value="item-1" />
+                {subQuestions.data
+                  ? subQuestions.data.map((item) => (
+                      <SubQuestionItem key={item.id} subQuestion={item} />
+                    ))
+                  : "Loading..."}
               </Accordion>
             </div>
           </div>
