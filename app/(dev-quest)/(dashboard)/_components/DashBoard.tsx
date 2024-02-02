@@ -81,7 +81,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         />
       </div>
       <div className="px-6 space-y-2">
-        <p className=" font-bold text-xl">{project.companyName}</p>
+        <p className=" font-bold text-xl line-clamp-1">{project.companyName}</p>
         <div className="flex flex-col mt-1">
           <p className="text-accent-foreground text-sm font-semibold">期限</p>
           <p className="text-[#8F8F8F] font-xs font-semibold">
