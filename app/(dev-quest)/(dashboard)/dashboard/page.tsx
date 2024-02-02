@@ -14,6 +14,7 @@ export default async function Home() {
     await prisma.user.create({
       data: {
         id: user!.id,
+        email: user!.emailAddresses[0].emailAddress,
       },
     });
   }
