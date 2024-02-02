@@ -27,7 +27,9 @@ model Question {
   id          String       @id @default(cuid())
   projectId   String
   content     String
+  answer      String
   checked     Boolean      @default(false)
+  locked      Boolean      @default(false)
   createdAt   DateTime     @default(now())
   subQuestions SubQuestion[]
   project     Project      @relation(fields: [projectId], references: [id])
