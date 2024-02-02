@@ -33,6 +33,8 @@ const QuestionCard = (props: QuestionCardProps) => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
+  const [response, setResponse] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const buttonProperties: ButtonProperties = {
     available: {
       text: "質問を深掘る",
@@ -70,14 +72,38 @@ const QuestionCard = (props: QuestionCardProps) => {
     }
     props.setQuestionitem(newQuestionItem);
   };
+  console.log(response);
 
   useEffect(() => {
     setIsActive(props.inputValue.length > 0);
   }, [props.inputValue]);
 
-  console.log(props.inputValue);
-  console.log(isActive);
-  console.log(isCompleted);
+  const handleSubmit = async (question: string) => {
+    console.log(question);
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setResponse(data);
+      setErrorMessage("");
+      console.log(response);
+    } catch (error) {
+      console.error("Submission error:", error);
+    }
+  };
+
   return (
     <Card className=" min-h-[178px] px-6 py-8 rounded-sm">
       <div className="flex">
@@ -99,6 +125,7 @@ const QuestionCard = (props: QuestionCardProps) => {
                 className={`mt-6 w-full text-base  bg-primary py-6`}
                 disabled={buttonProperties[buttonState].disabled}
                 onClick={() => {
+                  handleSubmit(props.inputValue);
                   setButtonState("loading");
                   setTimeout(() => {
                     setButtonState("completed");
