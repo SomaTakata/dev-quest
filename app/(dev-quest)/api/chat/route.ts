@@ -33,8 +33,20 @@ export async function POST(req: Request) {
       messages: [
         {
           role: "system",
-          content: `エントリーシートの質問を3つ以上のサブクエスチョンに分割ししてください。'。
-          出力は、json形式で、サブクエスチョンのみを返して`,
+          content: `
+          [役割]
+          あなたは、エンジニアの面接官です。
+          エントリーシートの質問を提示するので、3つ以上のサブクエスチョンに分割ししてください。
+          出力には、分割したサブクエスチョンとidをつけてmapで展開できるような形で出力してください。
+
+          [出力形式]
+          json
+          subquestion:
+          {
+            "id": "int",
+            "question": "string"
+          }
+        `,
         },
         {
           role: "user",
@@ -42,7 +54,7 @@ export async function POST(req: Request) {
         },
       ],
     });
-
+    console.log(completion.choices[0].message.content);
     return NextResponse.json(completion.choices[0].message.content);
   } catch (error) {
     console.log("[CONVERSATION_ERROR]", error);
