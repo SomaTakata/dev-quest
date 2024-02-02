@@ -1,6 +1,7 @@
 import React from "react";
 import SideBar from "./_components/SideBar";
 import NavBar from "./_components/NavBar";
+import Provider from "./_trpc/provider";
 
 const dashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -8,7 +9,7 @@ const dashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <SideBar />
       <div className="w-full overflow-y-scroll">
         <NavBar />
-        {children}
+        <Provider>{children}</Provider>
       </div>
     </div>
   );
