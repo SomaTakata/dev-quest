@@ -20,6 +20,8 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+    "@trpc/client": "^11.0.0-next-beta.255",
+    "@trpc/server": "^11.0.0-next-beta.255",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.315.0",
