@@ -38,9 +38,17 @@ type Props = {
 const QuestionCard = ({ questionId, content, locked }: Props) => {
   const [inputValue, setInputValue] = useState(content);
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
-  const [cardState, setCardState] = useState<CardStateType>("indeterminate");
+  const [cardState, setCardState] = useState<CardStateType>(
+    locked ? "dug" : "indeterminate",
+  );
   const [isCompleted, setIsCompleted] = useState(false);
   const [isActive, setIsActive] = useState(false);
+
+  const subMutation = clientApi.subQuestion.add.useMutation();
+  const subSubMutation = clientApi.subSubQuestion.add.useMutation();
+  const questionMutation = clientApi.question.delete.useMutation();
+
+  const subQuestions = clientApi.subQuestion.all.useQuery({ questionId });
 
   const buttonProperties: ButtonProperties = {
     available: {
@@ -64,21 +72,23 @@ const QuestionCard = ({ questionId, content, locked }: Props) => {
   //   props.setQuestionitem(newQuestionItem);
   // };
 
-  // const createSubQuestions = (questions: string[]) => {
-  //   const newQuestionItem: Question = { ...props };
-  //   for (const question of questions) {
-  //     const newSubQuestion: SubQuestionGroup = {
-  //       items: [
-  //         {
-  //           question,
-  //           inputValue: "",
-  //         },
-  //       ],
-  //     };
-  //     newQuestionItem.children = [...newQuestionItem.children, newSubQuestion];
-  //   }
-  //   props.setQuestionitem(newQuestionItem);
-  // };
+  const createSubQuestions = async (questions: string[]) => {
+    for (const question of questions) {
+      const sub = await subMutation.mutateAsync({
+        questionId,
+      });
+
+      subSubMutation.mutate({
+        subQuestionId: sub.id,
+        questionContent: question,
+      });
+    }
+  };
+
+  const deleteQuestion = (questionId: string) => {
+    questionMutation.mutate({ id: questionId });
+    location.reload();
+  };
 
   const handleSubmit = async (question: string) => {
     setButtonState("loading");
@@ -94,39 +104,39 @@ const QuestionCard = ({ questionId, content, locked }: Props) => {
     }).then((e) => console.log(e));
     setButtonState("loading");
     setCardState("dug");
-    // console.log(question);
-    // try {
-    //   await fetch("/api/chat", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       question,
-    //     }),
-    //   })
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //       createSubQuestions(JSON.parse(data));
-    //     })
-    //     .then(() => {
-    //       //props.inputValue を DB に追加
-    //       fetch(`/api/question/${questionId}`, {
-    //         method: "PATCH",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({
-    //           content: inputValue,
-    //         }),
-    //       }).then((e) => console.log(e));
-    //     })
-    //     .then(() => setButtonState("completed"))
-    //     .then(() => setCardState("dug"))
-    //     .then(() => setIsCompleted(true));
-    // } catch (error) {
-    //   console.error("Submission error:", error);
-    // }
+    console.log(question);
+    try {
+      await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          createSubQuestions(JSON.parse(data));
+        })
+        .then(() => {
+          //props.inputValue を DB に追加
+          fetch(`/api/question/${questionId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              content: inputValue,
+            }),
+          }).then((e) => console.log(e));
+        })
+        .then(() => setButtonState("completed"))
+        .then(() => setCardState("dug"))
+        .then(() => setIsCompleted(true));
+    } catch (error) {
+      console.error("Submission error:", error);
+    }
   };
 
   useEffect(() => {
@@ -148,7 +158,11 @@ const QuestionCard = ({ questionId, content, locked }: Props) => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
             />
-            <Trash2 size={24} className="text-muted" />
+            <Trash2
+              size={24}
+              onClick={() => deleteQuestion(questionId)}
+              className="text-muted"
+            />
           </div>
           <div className="px-8">
             <div className={cardState === "indeterminate" ? "" : "hidden"}>
@@ -168,29 +182,11 @@ const QuestionCard = ({ questionId, content, locked }: Props) => {
                 以下の3つから回答したい質問を選択してください。
               </p>
               <Accordion type="multiple">
-                {/* {props.children.map((group, index) => {
-                  const setSubQuestions = (value: SubQuestionGroup) => {
-                    const newSubQuestions: SubQuestionGroup[] = [
-                      ...props.children,
-                    ];
-                    newSubQuestions[index] = value;
-
-                    const newQuestionItem: Question = {
-                      ...props,
-                      children: newSubQuestions,
-                    };
-                    props.setQuestionitem(newQuestionItem);
-                  };
-
-                  return (
-                    <QuestionAccordionItem
-                      value={`item-${index}`}
-                      key={index}
-                      items={group.items}
-                      setSubQuestions={setSubQuestions}
-                    />
-                  );
-                })} */}
+                {subQuestions.data
+                  ? subQuestions.data.map((item) => (
+                      <QuestionAccordionItem subQuestionId={item.id} />
+                    ))
+                  : "Loading..."}
               </Accordion>
             </div>
           </div>

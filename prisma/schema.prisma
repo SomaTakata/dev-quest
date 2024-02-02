@@ -49,6 +49,7 @@ model SubSubQuestion {
   subQuestionId   String
   questionContent String
   answerContent   String
+  locked          Boolean      @default(false)
   important       Boolean      @default(false)
   level           Int
   createdAt       DateTime     @default(now())
