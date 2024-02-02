@@ -62,7 +62,8 @@ const QuestionCard = ({ question }: QuestionCardProps) => {
             />
             <Trash2 size={24} className="text-muted" />
           </div>
-          <div className="px-8">
+          {/* FIXME: 実装完了次第、hidden=true を外す */}
+          <div className="px-8" hidden={true}>
             {/* 深掘りするボタン、SubQuestion を生成したら消す */}
             <div hidden={!hasAlreadyCompleted}>
               <Button

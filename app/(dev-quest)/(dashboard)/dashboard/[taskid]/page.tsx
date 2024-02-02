@@ -17,9 +17,7 @@ const taskHome = async ({ params }: Props) => {
     return notFound();
   }
 
-  // FIXME: ProjectContent 以下が完成しだい、戻す
-  return <></>;
-  // return <ProjectContent project={project} />;
+  return <ProjectContent project={project} />;
 };
 
 export default taskHome;
