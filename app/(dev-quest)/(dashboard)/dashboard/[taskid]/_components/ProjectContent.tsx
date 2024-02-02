@@ -1,18 +1,31 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Plus, X } from "lucide-react";
-import QuestionCard from "./QuestionCard";
 import { Project } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { clientApi } from "@/app/(dev-quest)/_trpc/client-api";
+import QuestionCard from "./QuestionCard";
 
 type Props = {
   project: Project;
 };
 
-const ProjectContent = async ({ project }: Props) => {
-  const questions = await prisma.question.findMany({
-    where: { projectId: project.id },
-  });
+const ProjectContent = ({ project }: Props) => {
+  const questions = clientApi.question.all.useQuery({ projectId: project.id });
+  const mutation = clientApi.question.add.useMutation();
+
+  const handleAddQuestion = () => {
+    mutation
+      .mutateAsync({
+        projectId: project.id,
+        content: "新しい質問",
+      })
+      .then(() => {
+        questions.refetch();
+      })
+      .catch((e) => console.error(e));
+  };
 
   return (
     <div className="px-16 py-4">
@@ -39,12 +52,17 @@ const ProjectContent = async ({ project }: Props) => {
       <div className="px- w-full flex justify-center">
         <div className="mt-10 w-full">
           <p className=" text-xl font-bold mb-2">質問</p>
-          {questions.map((item, index) => (
-            <QuestionCard question={item} key={index} />
-          ))}
+          {questions.data
+            ? questions.data.map((item) => (
+                <QuestionCard question={item} key={item.id} />
+              ))
+            : "Loading..."}
 
           <div className="flex justify-start">
-            <Button className="mt-6   bg-[#FFFFFF] text-primary hover:text-[#FFFFFF] border border-primary">
+            <Button
+              className="mt-6   bg-[#FFFFFF] text-primary hover:text-[#FFFFFF] border border-primary"
+              onClick={handleAddQuestion}
+            >
               <Plus className="mr-2 h-4 w-4" />
               質問を追加
             </Button>
