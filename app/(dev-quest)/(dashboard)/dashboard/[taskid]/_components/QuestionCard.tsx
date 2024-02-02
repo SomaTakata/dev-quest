@@ -9,6 +9,7 @@ import { Check, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import QuestionAccordionItem from "./QuestionAccordionItem";
 import type { SubQuestionGroup } from "./QuestionAccordionItem";
+import { clientApi } from "@/app/(dev-quest)/_trpc/client-api";
 
 type ButtonStateType = "available" | "loading" | "completed";
 type CardStateType = "indeterminate" | "dug";
@@ -71,11 +72,35 @@ const QuestionCard = (props: QuestionCardProps) => {
     props.setQuestionitem(newQuestionItem);
   };
 
+  const handleSubmit = async (question: string) => {
+    setButtonState("loading");
+    console.log(question);
+    try {
+      await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          createSubQuestions(JSON.parse(data));
+        })
+        .then(() => setButtonState("completed"))
+        .then(() => setCardState("dug"))
+        .then(() => setIsCompleted(true));
+    } catch (error) {
+      console.error("Submission error:", error);
+    }
+  };
+
   useEffect(() => {
     setIsActive(props.inputValue.length > 0);
   }, [props.inputValue]);
 
-  console.log(props.inputValue);
   console.log(isActive);
   console.log(isCompleted);
   return (
@@ -99,20 +124,7 @@ const QuestionCard = (props: QuestionCardProps) => {
                 className={`mt-6 w-full text-base  bg-primary py-6`}
                 disabled={buttonProperties[buttonState].disabled}
                 onClick={() => {
-                  setButtonState("loading");
-                  setTimeout(() => {
-                    setButtonState("completed");
-
-                    setTimeout(() => {
-                      createSubQuestions([
-                        "なぜあなたはインターンに参加したいのですか？",
-                        "なぜあなたはインターンに参加したいのですか？",
-                        "なぜあなたはインターンに参加したいのですか？",
-                      ]);
-                      setCardState("dug");
-                      setIsCompleted(true);
-                    }, 500);
-                  }, 3000);
+                  handleSubmit(props.inputValue);
                 }}
               >
                 {buttonProperties[buttonState].icon}
