@@ -37,6 +37,7 @@ type Props = {
 
 const QuestionCard = ({ questionId, content, locked }: Props) => {
   const [inputValue, setInputValue] = useState(content);
+  const [answerValue, setAnswerValue] = useState("");
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
   const [cardState, setCardState] = useState<CardStateType>(
     locked ? "dug" : "indeterminate",
@@ -139,6 +140,13 @@ const QuestionCard = ({ questionId, content, locked }: Props) => {
     }
   };
 
+  const handleGenerateAnswer = async () => {
+    const generatedAnswer = await fetch(`/api/generateAnswer?id=${questionId}`);
+    const generatedAnswerText = await generatedAnswer.json();
+
+    setAnswerValue(generatedAnswerText);
+  };
+
   useEffect(() => {
     setIsActive(inputValue.length > 0);
   }, [inputValue]);
@@ -188,6 +196,23 @@ const QuestionCard = ({ questionId, content, locked }: Props) => {
                     ))
                   : "Loading..."}
               </Accordion>
+              <div className="flex justify-end w-full mt-4">
+                <Button
+                  className="w-36 bg-[#FFFFFF] text-primary hover:text-[#FFFFFF] border border-primary"
+                  onClick={handleGenerateAnswer}
+                >
+                  統合する
+                </Button>
+              </div>
+              {answerValue ? (
+                <Textarea
+                  disabled
+                  className="bg-[#FFFFFF] text-secondary py-2 mt-4"
+                  value={answerValue}
+                />
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>
