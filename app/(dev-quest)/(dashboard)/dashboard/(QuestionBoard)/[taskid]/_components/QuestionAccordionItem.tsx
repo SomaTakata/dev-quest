@@ -81,6 +81,7 @@ const QuestionAccordionItem = ({ subQuestionId }: Props) => {
                 id={item.id}
                 locked={item.locked}
                 index={index}
+                level={item.level}
                 questionContent={item.questionContent}
               />
             );
