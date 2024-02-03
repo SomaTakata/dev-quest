@@ -37,10 +37,10 @@ const AccordionArea = ({
   }, [inputValue]);
 
   const patchSubSubQuestion = (id: string, answer: string) => {
-    clientApi.subSubQuestion.patch.useMutation().mutate({
-      subQuestionId: id,
-      answerContent: answer,
-    });
+    // clientApi.subSubQuestion.patch.useMutation().mutate({
+    //   subQuestionId: id,
+    //   answerContent: answer,
+    // });
   };
 
   const handleSubmit = async () => {
@@ -71,7 +71,7 @@ const AccordionArea = ({
 
       // 帰ってきた質問をsubSubQuestionに追加
       if (data && data.newQuestion) {
-        await addSubSubQuestion(id, data.newQuestion);
+        // await addSubSubQuestion(id, data.newQuestion);
       }
 
       setButtonState("completed");
