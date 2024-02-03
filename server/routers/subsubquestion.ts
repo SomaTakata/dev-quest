@@ -37,4 +37,24 @@ export const subSubQuestionRouter = router({
         },
       });
     }),
+  patch: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        questionContent: z.string().nullable(),
+        answerContent: z.string(),
+      }),
+    )
+    .mutation(({ input }) => {
+      return prisma.subSubQuestion.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          questionContent:
+            input.questionContent !== null ? input.questionContent : undefined,
+          answerContent: input.answerContent,
+        },
+      });
+    }),
 });

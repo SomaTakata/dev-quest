@@ -31,14 +31,16 @@ const AccordionArea = ({
   const [buttonState, setButtonState] = useState<ButtonStateType>("available");
   const [cardState, setCardState] = useState<CardStateType>("indeterminate");
   const [isActive, setIsActive] = useState(false);
+  const subSubQuestion = clientApi.subSubQuestion.patch.useMutation();
 
   useEffect(() => {
     setIsActive(inputValue.length > 0);
   }, [inputValue]);
 
   const patchSubSubQuestion = (id: string, answer: string) => {
-    clientApi.subSubQuestion.patch.useMutation().mutate({
-      subQuestionId: id,
+    subSubQuestion.mutate({
+      id,
+      questionContent: null,
       answerContent: answer,
     });
   };
@@ -51,15 +53,16 @@ const AccordionArea = ({
 
     // OPEN APIにリクエストを送信
     try {
-      const response = await fetch("/api/openapi-endpoint", {
+      const response = await fetch("/api/sub-questioon", {
         // OPENAPIのエンドポイントを指定
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          question: questionContent,
-          answer: inputValue,
+          subQuestionId: id,
+          questionContent: questionContent,
+          answerContent: inputValue,
         }),
       });
 
@@ -71,7 +74,7 @@ const AccordionArea = ({
 
       // 帰ってきた質問をsubSubQuestionに追加
       if (data && data.newQuestion) {
-        await addSubSubQuestion(id, data.newQuestion);
+        await patchSubSubQuestion(id, data.newQuestion);
       }
 
       setButtonState("completed");
