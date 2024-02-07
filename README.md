@@ -1,37 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dev Quest
 
-## Getting Started
+![image](https://github.com/SomaTakata/dev-quest/assets/77139337/0f1a5c25-2f79-40da-8b9f-5035487d467f)
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎥 作品紹介動画
+https://github.com/SomaTakata/dev-quest/assets/77139337/2cfd3e30-52c3-4455-86ad-02495c8bb0cf
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🖋 スライドURL
+[Canva](https://www.canva.com/design/DAF7WBk80ew/M8F5nGa9bfapmWH_1j9xEg/view?utm_content=DAF7WBk80ew&utm_campaign=designshare&utm_medium=link&utm_source=editor#1)
+## 💪 製品概要
+Dev Questは、あなたのエントリーシート作成のサポート役です。このツールを使って、自分の考えを整理し、エントリーシートの質を向上させましょう。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🔥 背景
+多くの人がエントリーシート(ES)作成に苦労しています。特に、自分の経験や考えをどのように表現すれば良いのか、という点で悩んでいます。Dev Questは、このような悩みを解決するために開発されました。
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+#### 解決したい課題
+1. エントリーシートに何をどう書けば良いのかわからない。
+2. 一人で書けるが、内容が浅くなりがち。
 
-## Learn More
+#### 助けたい人
+自分をどのように表現すれば良いのか悩んでいる人たち。
 
-To learn more about Next.js, take a look at the following resources:
+#### 開発動機
+初めてエントリーシートを書いた時、内容が抽象的であったが、相談相手の助けを借りて具体的で詳細な内容を書くことができた経験から、壁打ち相手となるサービスを提供したいと考えました。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### ✨ 製品の特色
+AIに頼ることなく、自分自身で答えを見つけ出すプロセスを通じて、面接などで役立つ自己理解を深めることができます。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 🔥 主要機能
+- **GPTによる壁打ち**: 実際のエントリーシートの質問に答えることで、自己理解を深めることができます。直感的なUIで使いやすい。
+- **エントリーシートのデータ保存**: 書いたエントリーシートやその過程を記録し、後で振り返ることができます。
 
-## Deploy on Vercel
+### 🥳 製品のこだわり
+自分だけでは気づかない本質を引き出す設計にこだわりました。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 🚀 追加予定の機能
+- 履歴機能の追加予定あり。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# dev-quest
+## 開発技術情報
+
+### 活用技術
+- **API・データ**: OpenAI API, tRPC
+- **DB・ORM**: PlanetScale, Prisma
+- **認証**: Clerk
+- **フレームワーク・ライブラリ・モジュール**: TypeScript, Next.js, Tailwind CSS, shadcn/ui, Figma
+- **デバイス**: PC（Web対応）
+
+Dev Questは、最新のテクノロジーを駆使して、ユーザーに最高の体験を提供します。
